@@ -34,38 +34,37 @@
     <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script>
     <script src="https://mediafiles.botpress.cloud/15643b6e-9b8a-4a0a-832b-9866fb16ea5a/webchat/config.js" defer></script>
     <script>
-        window.botpressWebChat.onEvent(
-            (event) => {
-                if (event.type === 'MESSAGE.RECEIVED') {
-                    console.log('A new message was received!');
-                    const receivedText = event.value.payload.text;
-                    if (receivedText === 'Upload the Birth Certificate' || receivedText === 'Upload the Marriage Certificate') {
-                        const fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.addEventListener('change', (fileEvent) => {
-                            const file = fileEvent.target.files[0];
-                            const reader = new FileReader();
-                            reader.onload = function (loadEvent) {
-                                const fileContent = loadEvent.target.result;
-                                const title = file.name;
-                                window.botpressWebChat.sendPayload({
-                                    type: 'Trigger',
-                                    payload: {
-                                        title: title,
-                                        content: fileContent
-                                    }
-                                });
-                            };
-                            reader.readAsText(file);
-                        });
-                        fileInput.click();
-                    }
-                }
-            },
-            ['MESSAGE.RECEIVED']
-        );
-    </script>
-
+     window.botpressWebChat.onEvent(
+         (event) => {
+             if (event.type === 'MESSAGE.RECEIVED') {
+                 console.log('A new message was received!')
+                 if (event.value.payload.text === 'Upload the Birth Certificate' || event.value.payload.text === 'Upload the Marriage Certificate') {
+                     const fileInput = document.createElement('input');
+                     fileInput.type = 'file';
+                     fileInput.addEventListener('change', (event) => {
+                         const file = event.target.files[0];
+                         const reader = new FileReader();
+                         reader.onload = async function (event) {
+                             const fileContent = event.target.result;
+                             const title = file.name;
+                             window.botpressWebChat.sendPayload (
+                                 {
+                                     type: 'Trigger',
+                                     payload: {
+                                         title: title,
+                                         content: fileContent
+                                     }
+                                 }) 
+                         }
+                         reader.readAsText(file);
+                     })
+                     fileInput.click();
+                 }
+             }
+         },
+         ['MESSAGE.RECEIVED']
+     )
+ </script>
 
 </body>
 </html>
